@@ -11,7 +11,7 @@
 <script language="JScript">
 <![CDATA[
 
-var x = new ActiveXObject("WScript.Shell").Run("https://www.google.com/");
+var x = new ActiveXObject("WScript.Shell").Run("powershell.exe");
 
 ]]>
 </script>
