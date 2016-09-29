@@ -11,7 +11,7 @@
 <script language="JScript">
 <![CDATA[
 
-var x = new ActiveXObject("WScript.Shell").Run("calc.exe");
+var x = new ActiveXObject("WScript.Shell").Run("cmd.exe");
 
 ]]>
 </script>
