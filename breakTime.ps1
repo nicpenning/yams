@@ -1,11 +1,11 @@
-﻿#Script to prompt for a break
+#Script to prompt for a break
 #Made by Nicholas Penning
 #Last Updated: 10/24/2016
 
 $breakDuration = 15 #Minutes
 $productivtyDuration = 600 #Seconds
 
-#MessageBox Function
+#MessageBox Function from Microsoft - Source --> https://gallery.technet.microsoft.com/scriptcenter/PowerShell-Message-Box-6c6e4f75
 Function Show-MessageBox{
 
 	Param(
