@@ -1,10 +1,12 @@
 <#PowerCuckoo
     Created by Nicholas Penning
     Date: 8/14/2017
-    Updated: 8/22/2017
+    Updated: 8/25/2017
     Description: For automation!
     
-    Note: Needs a good handful of tweaks before this will work. Will update later!
+    Note: Needs a good handful of tweaks before this will work. Right now it will read an unread message and parse the contents and 
+    display what would be sent to Cuckoo. Will update later!
+    Requirements: curl.exe is needed to feed the Cuckoo API. Find a legit curl.exe and store it in the same directory as this file.
 #>
 
 #REST Calls
@@ -20,7 +22,6 @@ $namespace = $Outlook.GetNameSpace("MAPI")
 $emailAddress = Read-Host -Prompt 'Input your email address'
 $folderName = 'Cuckoo'
 $subFolderName = 'Feeding Cuckoo'
-$targetedFolder = Read-Host -Prompt 'Input the custom email folder you wish to parse'
 
 #RegEx to Grab URL
 #/<a\s+(?:[^>]*?\s+)?href="([^"]*)"/g
@@ -29,10 +30,9 @@ $urlsForSearch = @()
 $urlsFound = @()
 
 #Cuckoo Folder - #Feed the Cuckoo Subfolder
-#$FeedTheCuckoo = $namespace.Folders.Item($emailAddress).Folders.Item('Inbox').Folders.Item($folderName).Folders.Item($subFoldername).Items | Format-List Unread, CreationTime, SenderName, ConversationTopic, Body, HTMLBody, To
-#$FeedTheCuckooRead = $namespace.Folders.Item($emailAddress).Folders.Item('Inbox').Folders.Item($folderName).Folders.Item($subFoldername).Items | Select-Object -Property HTMLBody #HTMLBody
-#$urlsForSearch += $FeedTheCuckooRead
-$FeedTheCuckooUnread = $namespace.Folders.Item($emailAddress).Folders.Item('Inbox').Folders.Item($folderName).Folders.Item($subFoldername).Items | Where-Object UnRead -EQ true
+#$FeedTheCuckoo = $namespace.Folders.Item($emailAddress).Folders.Item('Inbox').Items | Format-List Unread, CreationTime, SenderName, ConversationTopic, Body, HTMLBody, To
+$FeedTheCuckooUnread = $namespace.Folders.Item($emailAddress).Folders.Item('Inbox').Items | Where-Object UnRead -EQ true
+
 #Mark Message as Read
 $FeedTheCuckooUnread.UnRead = "False"
 
@@ -56,21 +56,18 @@ Sleep -Seconds 15
 #Send the URLs away to be analyzed!
 #maliciousURLSubmission($cleanedUrlsForAnalysis)
 
-#ReportSpam
-#$namespace.Folders.Item(2).Folders.Item(1).Folders.Item(1).Items
-
 #Sample Data - Use for making sure your Cuckoo API and that PowerCuckoo is working :)
-#$MaliciousSite = "http://google.com"
-#$MaliciousFile = ".\FW   EXT  Outlook Web App 2017.msg"
-#$MaliciousFile = ".\Alert.msg"
-#$MaliciousFile = ".\Fw Deactivating your account in two (2) hours !.msg"
+#$MaliciousSite = "https://www.google.com"
+#$MaliciousFile = "C:\windows\system32\calc.exe"
+#$MaliciousFile = ".\Alert.doc"
+#$MaliciousFile = "\path\to\file.exe"
 
-#function maliciousFileSubmission ($submitFile) {
-#Submit Malicious File
-#.\curl.exe -F file=@$submitFile $MaliciousREST
-#Invoke-RestMethod -Method Post -Uri $MaliciousFileREST -InFile Documents\Pafish.docm
-#$upload = Invoke-RestMethod -Method Post -Uri $MaliciousFileREST -InFile $MaliciousFile -ContentType 'multipart/form-data' 
-#}
+function maliciousFileSubmission ($submitFile) {
+    Submit Malicious File
+    .\curl.exe -F file=@$submitFile $MaliciousREST
+    Invoke-RestMethod -Method Post -Uri $MaliciousFileREST -InFile Documents\Pafish.docm
+    $upload = Invoke-RestMethod -Method Post -Uri $MaliciousFileREST -InFile $MaliciousFile -ContentType 'multipart/form-data' 
+}
 
 
 #Function for sending Cuckoo malicious URLs
@@ -86,8 +83,9 @@ $submitURL | ForEach-Object {
     }
 }
 
-
-maliciousURLSubmission($cleanedUrlsForAnalysis)
+#Call Malicous URL/File Submission Functions
+#maliciousURLSubmission($cleanedUrlsForAnalysis)
+#maliciousFileSubmission($MaliciousFile)
 
 <# Cuckoo API Documenation - http://docs.cuckoosandbox.org/en/latest/usage/api/
 Resource	Description
