@@ -59,5 +59,6 @@ Function Show-MessageBox{
 	Return $Answer
 }
 
-$message = "Woo! Yous Infected! Bad SEP!"
+calc.exe
+$message = "Did Calc.exe run? If so yous infected! Bad SEP!"
 Show-MessageBox -Msg $message -C
